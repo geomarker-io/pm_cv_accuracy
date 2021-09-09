@@ -18,7 +18,7 @@ ui <- fluidPage(
   
   #sidebarLayout(
   # sidebarPanel = sidebarPanel(width = 300,
-    absolutePanel(id = "controls", class = "panel panel-default", fixed = TRUE,
+  absolutePanel(id = "controls", class = "panel panel-default", fixed = TRUE,
                   draggable = TRUE, top = 60, left = "auto", right = 20, bottom = "auto",
                   width = 200, height = "auto", style = "z-index: 10;",
                   
@@ -28,15 +28,15 @@ ui <- fluidPage(
                                                               "Annual" = "annual", 
                                                               "Monthly" = "monthly", 
                                                               "Weekly" = "weekly", 
-                                                              "Daily" = "daily",
-                                                              "None selected" = "")),
+                                                              "Daily" = "daily")),
+                                                              #"None selected" = "")),
       
     radioButtons("err", "Error Metric", choices = c("MAE" = "mae",
                                                       "RMSE" = "rmse",
                                                       "R\u00B2" = "rsq",
                                                       "Slope" = "slope",
-                                                      "95% Conf. Int. Coverage" = "ci_coverage",
-                                                      "None selected" = ""),
+                                                      "95% Conf. Int. Coverage" = "ci_coverage"),
+                                                      #"None selected" = ""),
                    selected = "mae")
       
       
@@ -73,14 +73,20 @@ server <- function(input, output, session) {
     }) #renderLeaflet
 
   observe({
-    pal <- colorNumeric("viridis", domain = d_user()$value)
+    
+    #dom <- range(d_user()$value, na.rm = T)
+    if(d_user()$metric == 'rsq' & d_user()$time == 'all'){
+      pal <- colorNumeric("viridis", domain = c(0:1), na.color = "#F7F7F7") #all/rsq is NA for all, set to grey
+    } else{
+      pal <- colorNumeric("viridis", domain = d_user()$value)
+    }
     
     leafletProxy("map", data = d_user()) %>%
       clearShapes() %>%
       clearControls() %>%
       addPolygons(color = ~pal(value)) %>%
       addLegend("bottomright", pal = pal, values = ~value,
-                title = "Error", opacity = .7)
+                 title = "CV Error", opacity = .7)
       
   }) #observe selections
   
@@ -172,12 +178,13 @@ h2map()
 # 
 # pal <- colorNumeric("viridis", domain = d_user[,colnames(d_user %in% metric)])
 # 
-# 
+# # 
 # d_map_oob_long <- d_map_oob %>%
 #   select(-oob) %>%
 #   pivot_longer(cols = c(mae,rmse,rsq,slope,ci_coverage),
 #                names_to = "metric",
 #                values_to = "value")
+# # 
 # 
 # saveRDS(d_map_oob_long, "d_map_long.rds")
 # 
@@ -212,3 +219,5 @@ h2map()
 #                                   'N', 'MAE', 'RMSE', 'R\u00B2',
 #                                   'Slope', '95% CI Coverage'), rnames = FALSE) 
 #  
+
+
