@@ -34,7 +34,7 @@ ui <- fluidPage(
     radioButtons("err", "Error Metric", choices = c("MAE" = "mae",
                                                       "RMSE" = "rmse",
                                                       "R\u00B2" = "rsq",
-                                                      "Slope" = "slope",
+                                                      #"Slope" = "slope",
                                                       "95% Conf. Int. Coverage" = "ci_coverage"),
                                                       #"None selected" = ""),
                    selected = "mae")
@@ -81,13 +81,36 @@ server <- function(input, output, session) {
       pal <- colorNumeric("viridis", domain = d_user()$value)
     }
     
-    leafletProxy("map", data = d_user()) %>%
-      clearShapes() %>%
-      clearControls() %>%
-      addPolygons(color = ~pal(value)) %>%
-      addLegend("bottomright", pal = pal, values = ~value,
-                 title = "CV Error", opacity = .7)
-      
+
+      if(d_user()$metric == 'mae'){
+        leafletProxy("map", data = d_user()) %>%
+          clearShapes() %>%
+          clearControls() %>%
+          addPolygons(color = ~pal(value), opacity = .9) %>%
+          addLegend("bottomright", pal = pal, values = ~value,
+                 title = "MAE", opacity = .9)
+      } else if (d_user()$metric == 'rmse'){
+        leafletProxy("map", data = d_user()) %>%
+          clearShapes() %>%
+          clearControls() %>%
+          addPolygons(color = ~pal(value), opacity = .9) %>%
+          addLegend("bottomright", pal = pal, values = ~value,
+                 title = "RMSE", opacity = .9) 
+      } else if (d_user()$metric == 'rsq'){
+        leafletProxy("map", data = d_user()) %>%
+          clearShapes() %>%
+          clearControls() %>%
+          addPolygons(color = ~pal(value), opacity = .9) %>%
+          addLegend("bottomright", pal = pal, values = ~value,
+                  title = "R\u00B2", opacity = .9) 
+      } else {#if (d_user()$metric == 'ci_coverage'){
+        leafletProxy("map", data = d_user()) %>%
+          clearShapes() %>%
+          clearControls() %>%
+          addPolygons(color = ~pal(value), opacity = .9) %>%
+          addLegend("bottomright", pal = pal, values = ~value,
+                  title = "95% CI Coverage", opacity = .9, labFormat = labelFormat(suffix = '%'))
+      }#if loop
   }) #observe selections
   
   #show a popup table upon clicking
