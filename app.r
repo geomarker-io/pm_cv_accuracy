@@ -86,28 +86,28 @@ server <- function(input, output, session) {
         leafletProxy("map", data = d_user()) %>%
           clearShapes() %>%
           clearControls() %>%
-          addPolygons(color = ~pal(value), opacity = .9) %>%
+          addPolygons(color = ~pal(value), opacity = .75, fillOpacity = .55) %>%
           addLegend("bottomright", pal = pal, values = ~value,
-                 title = "MAE", opacity = .9)
+                 title = "MAE", labFormat = labelFormat(suffix = " μg/m\u00B3"), opacity = .9)
       } else if (d_user()$metric == 'rmse'){
         leafletProxy("map", data = d_user()) %>%
           clearShapes() %>%
           clearControls() %>%
-          addPolygons(color = ~pal(value), opacity = .9) %>%
+          addPolygons(color = ~pal(value), opacity = .75, fillOpacity = .55) %>%
           addLegend("bottomright", pal = pal, values = ~value,
-                 title = "RMSE", opacity = .9) 
+                 title = "RMSE", labFormat = labelFormat(suffix = " μg/m\u00B3"), opacity = .9) 
       } else if (d_user()$metric == 'rsq'){
         leafletProxy("map", data = d_user()) %>%
           clearShapes() %>%
           clearControls() %>%
-          addPolygons(color = ~pal(value), opacity = .9) %>%
+          addPolygons(color = ~pal(value), opacity = .75, fillOpacity = .55) %>%
           addLegend("bottomright", pal = pal, values = ~value,
                   title = "R\u00B2", opacity = .9) 
       } else {#if (d_user()$metric == 'ci_coverage'){
         leafletProxy("map", data = d_user()) %>%
           clearShapes() %>%
           clearControls() %>%
-          addPolygons(color = ~pal(value), opacity = .9) %>%
+          addPolygons(color = ~pal(value), opacity = .75, fillOpacity = .55) %>%
           addLegend("bottomright", pal = pal, values = ~value,
                   title = "95% CI Coverage", opacity = .9, labFormat = labelFormat(suffix = '%'))
       }#if loop
