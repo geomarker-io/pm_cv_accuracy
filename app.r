@@ -21,8 +21,6 @@ ui <- fluidPage(
   absolutePanel(id = "controls", class = "panel panel-default", fixed = TRUE,
                   draggable = TRUE, top = 60, left = "auto", right = 20, bottom = "auto",
                   width = 200, height = "auto", style = "z-index: 10;",
-                  
-      tags$h4("Temporal Resolution and Error Metrics"),
       
     radioButtons("temp", "Temporal Resolution", choices = c("All" = "all", 
                                                               "Annual" = "annual", 
@@ -31,7 +29,7 @@ ui <- fluidPage(
                                                               "Daily" = "daily")),
                                                               #"None selected" = "")),
       
-    radioButtons("err", "Error Metric", choices = c("MAE" = "mae",
+    radioButtons("err", "Performance Metric", choices = c("MAE" = "mae",
                                                       "RMSE" = "rmse",
                                                       "R\u00B2" = "rsq",
                                                       #"Slope" = "slope",
@@ -88,14 +86,14 @@ server <- function(input, output, session) {
           clearControls() %>%
           addPolygons(color = ~pal(value), opacity = .75, fillOpacity = .55) %>%
           addLegend("bottomright", pal = pal, values = ~value,
-                 title = "MAE", labFormat = labelFormat(suffix = " μg/m\u00B3"), opacity = .9)
+                 title = "MAE (μg/m\u00B3)", opacity = .9)
       } else if (d_user()$metric == 'rmse'){
         leafletProxy("map", data = d_user()) %>%
           clearShapes() %>%
           clearControls() %>%
           addPolygons(color = ~pal(value), opacity = .75, fillOpacity = .55) %>%
           addLegend("bottomright", pal = pal, values = ~value,
-                 title = "RMSE", labFormat = labelFormat(suffix = " μg/m\u00B3"), opacity = .9) 
+                 title = "RMSE (μg/m\u00B3)", opacity = .9) 
       } else if (d_user()$metric == 'rsq'){
         leafletProxy("map", data = d_user()) %>%
           clearShapes() %>%
@@ -109,7 +107,7 @@ server <- function(input, output, session) {
           clearControls() %>%
           addPolygons(color = ~pal(value), opacity = .75, fillOpacity = .55) %>%
           addLegend("bottomright", pal = pal, values = ~value,
-                  title = "95% CI Coverage", opacity = .9, labFormat = labelFormat(suffix = '%'))
+                  title = "95% CI Coverage (%)", opacity = .9)
       }#if loop
   }) #observe selections
   
