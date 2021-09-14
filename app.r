@@ -14,7 +14,7 @@ css = HTML("
 ui <- fluidPage(
   tags$head(tags$style(css)),
   
-  headerPanel("PM2.5 Cross Validation Error"),
+  headerPanel("Spatiotemporal PM2.5 Cross Validated Model Performance"),
   
   #sidebarLayout(
   # sidebarPanel = sidebarPanel(width = 300,
@@ -22,7 +22,7 @@ ui <- fluidPage(
                   draggable = TRUE, top = 60, left = "auto", right = 20, bottom = "auto",
                   width = 200, height = "auto", style = "z-index: 10;",
                   
-      tags$h4("Temporal Resolution and Error Metrics"),
+      tags$h4("Temporal Resolution and Performance Metrics"),
       
     radioButtons("temp", "Temporal Resolution", choices = c("All" = "all", 
                                                               "Annual" = "annual", 
@@ -48,7 +48,7 @@ ui <- fluidPage(
   
   br(),
   
-  p(strong("About"),"Here is a space where we can elaborate")
+  p(strong("About:"),"This interactive map illustrates the cross validated performance of a nationwide spatiotemporal PM2.5 exposure assessment model (preprint DOI: https://doi.org/10.20944/preprints202109.0164.v1) according to 81 different regions corresponding to resolution 2 H3 cells (average area: 86.7 sq km) covering the study domain and different temporal aggregations.")
     
   #  ) #mainPanel
  # ) #sidebarLayout
