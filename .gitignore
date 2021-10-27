@@ -6,3 +6,4 @@ h2_shiny_map.Rproj
 shinyappsIO.r
 pm_cv_accuracy.Rproj
 .DS_Store
+rsconnect/
