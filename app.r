@@ -49,7 +49,7 @@ ui <- fluidPage(
   
   p(strong("About:"),"This interactive map illustrates the cross validated performance of a nationwide spatiotemporal PM2.5 exposure assessment model according to 81 different regions corresponding to resolution 2 H3 cells (average area: 86.7 sq km) covering the study domain and different temporal aggregations."),
   p(strong("Citation:"),"Brokamp, C. A High Resolution Spatiotemporal Fine Particulate Matter Exposure Assessment Model for the Contiguous United States. Environmental Advances. In Press. 2021. 2021090164 (doi: 10.1016/j.envadv.2021.100155)"),
-  p("Accepted preprint available online at", tags$a(href="https://doi.org/10.1016/j.envadv.2021.100155", "https://doi.org/10.1016/j.envadv.2021.100155")),
+  p("Accepted preprint available online at", tags$a(href=" https://doi.org/10.1016/j.envadv.2021.100155", "https://doi.org/10.1016/j.envadv.2021.100155"))
     
   #  ) #mainPanel
  # ) #sidebarLayout
@@ -129,13 +129,13 @@ server <- function(input, output, session) {
       st_drop_geometry()
     
     pop_table <- d_table %>%
-      htmlTable::txtRound(excl.cols = c(1,5), digits = 2) %>% 
+      htmlTable::txtRound(digits = 2) %>% 
       htmlTable::addHtmlTableStyle(col.columns = c("none", "#F7F7F7"),
                                    css.cell = "padding-left: .5em; padding-right: .2em;",
                                    css.header = "padding-left: .3em; padding-right: .3em;",
                                    align.header = "ccccc") %>% 
       htmlTable::htmlTable(header = c('Temporal Resolution', 'MAE', 'RMSE', 'R\u00B2',
-                                       '95% CI Coverage'), rnames = FALSE) 
+                                      '95% CI Coverage'), rnames = FALSE) 
     
     leafletProxy("map") %>% addPopups(lng = lng, lat = lat, pop_table, layerId = poptable)
     
