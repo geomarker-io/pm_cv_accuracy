@@ -59,6 +59,10 @@ server <- function(input, output, session) {
   
   d <- reactive({readRDS("d_map_long.rds")})
   
+  d_aqs <- reactive({readRDS("aqs_censors.rds") %>% 
+    st_as_sf()
+    })
+  
   d_user <- reactive({
     d() %>%
       filter(time == input$temp & metric == input$err) %>%
@@ -68,9 +72,10 @@ server <- function(input, output, session) {
   #d_user <- reactive({sf::st_transform(d_user(), crs = 5072)})
 
   output$map <- renderLeaflet({
-    leaflet(~d_user()) %>%
-      setView(-93.65, 38.0285, zoom = 4.5) %>%
-      addTiles() 
+     leaflet(~d_user()) %>%
+       setView(-93.65, 38.0285, zoom = 4.5) %>%
+       addTiles()  
+    
     }) #renderLeaflet
 
   observe({
@@ -82,35 +87,48 @@ server <- function(input, output, session) {
       pal <- colorNumeric("viridis", domain = d_user()$value)
     }
     
+    pal2 <- colorBin("viridis", domain = d_aqs()$count, bins = 5)
 
       if(d_user()$metric == 'mae'){
         leafletProxy("map", data = d_user()) %>%
           clearShapes() %>%
           clearControls() %>%
           addPolygons(color = ~pal(value), opacity = .75, fillOpacity = .55) %>%
+          addPolygons(data = d_aqs(), color = ~pal2(count)) %>% 
           addLegend("bottomright", pal = pal, values = ~value,
-                 title = "MAE (μg/m\u00B3)", opacity = .9)
+                 title = "MAE (μg/m\u00B3)", opacity = .9) %>% 
+          addLegend("bottomleft", pal = pal2, values = ~count, bins = 5,
+                    title = "Number of Measurements at Monitor", opacity = .9)
       } else if (d_user()$metric == 'rmse'){
         leafletProxy("map", data = d_user()) %>%
           clearShapes() %>%
           clearControls() %>%
           addPolygons(color = ~pal(value), opacity = .75, fillOpacity = .55) %>%
+          addPolygons(data = d_aqs(), color = ~pal2(count)) %>%
           addLegend("bottomright", pal = pal, values = ~value,
-                 title = "RMSE (μg/m\u00B3)", opacity = .9) 
+                 title = "RMSE (μg/m\u00B3)", opacity = .9) %>% 
+          addLegend("bottomleft", pal = pal2, values = ~count, bins = 5,
+                    title = "Number of Measurements at Monitor", opacity = .9) 
       } else if (d_user()$metric == 'rsq'){
         leafletProxy("map", data = d_user()) %>%
           clearShapes() %>%
           clearControls() %>%
           addPolygons(color = ~pal(value), opacity = .75, fillOpacity = .55) %>%
+          addPolygons(data = d_aqs(), color = ~pal2(count)) %>%
           addLegend("bottomright", pal = pal, values = ~value,
-                  title = "R\u00B2", opacity = .9) 
+                  title = "R\u00B2", opacity = .9) %>% 
+          addLegend("bottomleft", pal = pal2, values = ~count, bins = 5,
+                    title = "Number of Measurements at Monitor", opacity = .9) 
       } else {#if (d_user()$metric == 'ci_coverage'){
         leafletProxy("map", data = d_user()) %>%
           clearShapes() %>%
           clearControls() %>%
           addPolygons(color = ~pal(value), opacity = .75, fillOpacity = .55) %>%
+          addPolygons(data = d_aqs(), color = ~pal2(count)) %>%
           addLegend("bottomright", pal = pal, values = ~value,
-                  title = "95% CI Coverage (%)", opacity = .9)
+                  title = "95% CI Coverage (%)", opacity = .9) %>% 
+          addLegend("bottomleft", pal = pal2, values = ~count, bins = 5,
+                    title = "Number of Measurements at Monitor", opacity = .9)
       }#if loop
   }) #observe selections
   
